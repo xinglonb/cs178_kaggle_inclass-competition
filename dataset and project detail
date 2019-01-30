@@ -1,0 +1,94 @@
+In this competition, you will work to predict the amount of rainfall at a given location, using 
+remote sensing (satellite) and numerical model data. You may use any set of techniques that you like 
+to make your predictions.
+
+The dataset is courtesy of UC Irvine's Center for Hydrometeorology and Remote Sensing, including Dr. Soroosh Sorooshian, Dr. Xiaogang Gao, Dr. Kuo-lin Hsu, Dan Braithwaite, and Yumeng Tau, and additionally processed by Jonathan Stroud and Nick Gallo (ICS).
+
+File descriptions
+
+    kaggle.X1.names - primary feature names, in csv format
+    kaggle.X1.train - primary feature values, training data set
+    kaggle.X2.train - raw IR3 local image patches, training data set
+    kaggle.Y.train - target values, training data set
+    kaggle.X1.test - primary feature values, test data set
+    kaggle.X2.test - raw IR3 local image patches, test data set
+
+Data fields
+
+    Temporal
+        Day - day of the year, ranging from 153 (june 1) to 240 (august 27)
+        Time - minute of the day, ranging from 15 (00:15) to 1395 (23:45)
+    PERSIANN (patch-based features used in CHRS prediction model)
+        IR4: raw IR4 data of the point of interest
+        3by3_mean: the mean value of 3*3 matrix centered with the interested point
+        3by3_std: the standard deviation of 3*3 matrix centered with the interested point
+        5by5_mean: the mean value of 5*5 matrix centered with the interested point
+        5by5_std: the standard deviation of 5*5 matrix centered with the interested point
+        cloud_size: The cloud patch size covering the interested point (cloud here is defined as IR4 <= 25300)
+        cloud_min: the minimum value of the cloud patch
+        cloud_mean: the mean value of the cloud patch
+        cloud_std: the standard deviation of the cloud patch
+    GOES (Satellite)
+        VIS - visual imaging channel in albedo
+        IR2 - infrared channel in brightness temp deg K *100
+        IR3 - infrared (water vapor) channel in brightness temp deg K *100
+        IR4 - infrared (long wave) channel in brightness temp deg K *100
+        IR6 - infrared channel in brightness temp deg K *100
+        GFS (Numerical weather model values)
+        absv500 - Absolute Vorticity [1/s] 500mb
+        capesurf - Convective Available Potential Energy [J/kg] surface
+        cinsurf - Convective Inhibition [J/kg] surface
+        hgt500 - Geopotential Height [gpm] 500mb
+        hgt850 - Geopotential Height [gpm] 850mb
+        pressurf - Pressure [Pa] surface
+        pwattot - Precipitable Water [kg/m^2] total
+        rh2m - Relative Humidity [%] 2 m above ground
+        rh500 - Relative Humidity [%] 500mb
+        rh850 - Relative Humidity [%] 850mb
+        tmp2m - Temperature [K] 2 m above ground
+        ugrd950 - U-Component of Wind [m/s] 950mb
+        vgrd950 - V-Component of Wind [m/s] 950mb
+        vvel700 - Vertical Velocity (Pressure) [Pa/s] 700mb
+        vvel850 - Vertical Velocity (Pressure) [Pa/s] 850mb
+
+Also available is a 16x16 raw IR3 image patch centered around the point of interest; these image patches 
+are provided in the "X2" feature file.
+
+Evaluation:
+The evaluation metric for this competition is root mean squared error (RMSE). Your predictions should all be non-negative real-valued numbers; the RMSE is given by
+
+J=( 1m∑i(ŷ (i)−y(i))2 )12
+
+As a side note, the data have been pre-processed so that
+y(i)
+
+is actually the log (base 2) of one plus the rainfall amount in mm.
+Submission Format
+
+Your submission file should contain two columns, "ID" and "Prediction". The ID is simply the row number of the test data point in the test data matrix, and the Prediction is your estimate of
+y(i)
+
+.
+
+The file should contain a header and have the following format:
+
+ID,Prediction
+1,1.33
+2,5.00e-2
+3,0
+4,3.1
+etc
+
+You can easily output this format in Python using, for example, the following code snippet:
+
+Ye = learner.predict( Xeval );      # make predictions
+# Note: be sure Ye is a flat vector, shape (m,)
+# otherwise, reshape it or change the code below:
+
+fh = open('predictions.csv','w')    # open file for upload
+fh.write('ID,Prediction\n')         # output header line
+for i,yi in enumerate(Ye):
+  fh.write('{},{}\n'.format(i+1,yi)) # output each prediction
+fh.close()                          # close the file
+
+Note that the IDs are 1-based, rather than 0-based, so add one to your index.
