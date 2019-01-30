@@ -1,3 +1,5 @@
+//The following details comes from https://inclass.kaggle.com/c/cs178-project-2016
+
 In this competition, you will work to predict the amount of rainfall at a given location, using 
 remote sensing (satellite) and numerical model data. You may use any set of techniques that you like 
 to make your predictions.
